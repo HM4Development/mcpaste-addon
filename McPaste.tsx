@@ -58,7 +58,23 @@ export default () => {
             method: "POST",
             body: formData
         }).then(data => data.json())
-            .then((data: PasteResponse) => navigator.clipboard.writeText(`mcpaste.com/${data.key}`))
+            .then((data: PasteResponse) => {
+                if(navigator.clipboard !== undefined)
+                    return navigator.clipboard.writeText(`https://mcpaste.com/${data.key}`);
+
+                const area = document.createElement("textarea");
+                area.value = `https://mcpaste.com/${data.key}`;
+                area.style.position = "fixed";
+                document.body.appendChild(area);
+                area.focus();
+                area.select();
+                area.setSelectionRange(0, 99999);
+
+                document.execCommand("copy");
+
+                document.body.removeChild(area);
+                return Promise.resolve();
+            })
             .then(() => {
                 setCopied(true);
                 resetStateAfter();
