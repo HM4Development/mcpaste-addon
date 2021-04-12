@@ -4,8 +4,10 @@ Copy's the server console and sends to mcpaste.com
 
 Place the " McPaste.tsx " in " resources/components/server "
 
-ServerConsole.tsx -> add import <br/>
+ServerConsole.tsx -> add import 
+```js
 import McPaste from "@/components/server/McPaste";
+```
 
 ServerConsole.tsx -> replace
 ```html
