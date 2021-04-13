@@ -2,7 +2,7 @@
 Copy's the server console and sends to mcpaste.com
 
 
-Place the " McPaste.tsx " in " resources/components/server "
+Place the " McPaste.tsx " in " /var/www/pterodactyl/resources/scripts/components/server "
 
 ServerConsole.tsx -> add import 
 ```js
