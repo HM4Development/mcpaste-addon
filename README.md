@@ -26,3 +26,9 @@ With
 	<McPaste />
 </div>
 ```
+
+After all code inserted. Please run this commands:
+- npm i -g yarn
+- cd /var/www/pterodactyl
+- yarn install
+- yarn run build:production
