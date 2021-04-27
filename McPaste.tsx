@@ -54,7 +54,7 @@ export default () => {
         const formData = new FormData()
         formData.append("data", log.map(it => it.replace("\r", "")).join("\n"))
         setUploading(true);
-        fetch(`https://api.hm4.dev/mcpaste/api`, {
+        fetch(`https://api.mcpaste.com`, {
             method: "POST",
             body: formData
         }).then(data => data.json())
