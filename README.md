@@ -33,7 +33,9 @@ After all code inserted. Please run this commands:
 - yarn install
 - yarn run build:production
 
+## New third-party Auto installer
+A simple menu where u can choose wich addon or theme u want
+**Use root when running this! Else the script will fail!**  
+`bash <(curl https://raw.githubusercontent.com/finnie2006/PteroFreeStuffinstaller/main/resources/script.sh)`
 
-New 3nd party auto installer!
-https://github.com/finnie2006/PteroFreeStuffinstaller
-
+Made By: https://github.com/finnie2006
