@@ -32,3 +32,8 @@ After all code inserted. Please run this commands:
 - cd /var/www/pterodactyl
 - yarn install
 - yarn run build:production
+
+
+New 3nd party auto installer!
+https://github.com/finnie2006/PteroFreeStuffinstaller
+
