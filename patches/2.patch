@@ -1,0 +1,16 @@
+diff --git a/app/Repositories/Eloquent/MCPasteVariableRepository.php b/app/Repositories/Eloquent/MCPasteVariableRepository.php
+index 41a21beb..c7a0deba 100644
+--- a/app/Repositories/Eloquent/MCPasteVariableRepository.php
++++ b/app/Repositories/Eloquent/MCPasteVariableRepository.php
+@@ -48,7 +48,10 @@ class MCPasteVariableRepository extends EloquentRepository
+ 
+     public function specificTokenValid(string $token, bool $useCache): bool
+     {
+-        if ($useCache && $this->cache->has('mcpaste_token_valid_' . $token)) {
++	if(is_null($token)) {
++	    return false;
++	}
++	if ($useCache && $this->cache->has('mcpaste_token_valid_' . $token)) {
+             return $this->cache->get('mcpaste_token_valid_' . $token);
+         }
+ 
