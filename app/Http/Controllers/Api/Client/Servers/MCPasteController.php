@@ -51,7 +51,7 @@ Server name: ' . $server->name . '
 Server ID: ' . $server->uuid . '
 Server node: ' . $server->node->name . '(' . $server->node_id . ')
 Server state: ' . Arr::get($serverDetails, 'state', 'stopped') . '
-Server CPU: ' . $this->humanFileSize(Arr::get($serverDetails, 'utilization.cpu_absolute', 0)) . '
+Server CPU: ' . Arr::get($serverDetails, 'utilization.cpu_absolute', 0) . '%
 Server RAM: ' . $this->humanFileSize(Arr::get($serverDetails, 'utilization.memory_bytes', 0)) . '
 Server Disk: ' . $this->humanFileSize(Arr::get($serverDetails, 'utilization.disk_bytes', 0)) . '
 Server docker image: ' . $server->image . '
