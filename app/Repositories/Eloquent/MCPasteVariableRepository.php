@@ -46,7 +46,7 @@ class MCPasteVariableRepository extends EloquentRepository
         return $this->specificTokenValid($this->getValue('token'), true);
     }
 
-    public function specificTokenValid(string $token, bool $useCache): bool
+    public function specificTokenValid(?string $token, bool $useCache): bool
     {
 	if(is_null($token)) {
 	    return false;
