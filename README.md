@@ -3,6 +3,10 @@ Copy's the server console and sends to mcpaste.com
 
 ## Installation
 
+### Preconditions
+- NodeJS and NPM installed
+- git installed
+
 We have made a simple to use script that can install the addon for you, to run it, issue these 2 commands:
 ```bash
 # Change directory to your pterodactyl root, change if different
