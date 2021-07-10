@@ -48,7 +48,10 @@ class MCPasteVariableRepository extends EloquentRepository
 
     public function specificTokenValid(string $token, bool $useCache): bool
     {
-        if ($useCache && $this->cache->has('mcpaste_token_valid_' . $token)) {
+	if(is_null($token)) {
+	    return false;
+	}
+	if ($useCache && $this->cache->has('mcpaste_token_valid_' . $token)) {
             return $this->cache->get('mcpaste_token_valid_' . $token);
         }
 
