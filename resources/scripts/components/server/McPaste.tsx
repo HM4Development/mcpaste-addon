@@ -103,12 +103,33 @@ const ComponentButton = styled(Button)`
     }
 `
 
+const copyData = (content: string) => {
+    function copyNavigator () {
+        navigator.clipboard.writeText(content);
+    }
+
+    function copyHtml () {
+        const area = document.createElement("textarea");
+        area.value = content;
+        area.style.position = "fixed";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        area.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        document.body.removeChild(area);
+    }
+
+    if (navigator.clipboard !== undefined) copyNavigator()
+    else copyHtml()
+}
+
 export default ({ position }: Props) => {
     const [ log, setLog ] = useState<string[]>([]);
     const addLog = (data: string) => setLog(prevLog => [...prevLog, data.startsWith(">") ? data.substring(1) : data])
 
     const [ uploading, setUploading ] = useState(false)
-    const [ copied, setCopied ] = useState<false | string | { error: string }>(false)
+    const [ copied, setCopied ] = useState<false | PasteResponse>(false)
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid)
@@ -127,11 +148,11 @@ export default ({ position }: Props) => {
 
     useEffect(() => {
         if (!copied) return
-        if (typeof copied === "string") {
-            setToastText(mcPasteStyle.toastText.replace("%key%", copied));
-            return;
+        if (copied.key) {
+            setToastText(mcPasteStyle.toastText.replace("%key%", copied.key));
+        } else if (copied.error) {
+            setToastText(mcPasteStyle.toastErrorText.replace("%error%", copied.error))
         }
-        setToastText(mcPasteStyle.toastErrorText.replace("%error%", copied.error))
     }, [ copied ])
 
     const resetStateAfter = (ms = 2500) => {
@@ -146,30 +167,18 @@ export default ({ position }: Props) => {
         const data = stripAnsi(log.map(it => it.replace("\r", "")).join("\n")) || "";
         setUploading(true);
         shareServerLog(uuid, data)
-            .then((data: PasteResponse): string => {
-                if (navigator.clipboard !== undefined) {
-                    navigator.clipboard.writeText(`https://mcpaste.com/${data.key}`);
-                    return data.key
+            .then((response: PasteResponse): PasteResponse => {
+                if (response.key) {
+                    copyData(`https://mcpaste.com/${response.key}`)
                 }
-
-                const area = document.createElement("textarea");
-                area.value = `https://mcpaste.com/${data.key}`;
-                area.style.position = "fixed";
-                document.body.appendChild(area);
-                area.focus();
-                area.select();
-                area.setSelectionRange(0, 99999);
-
-                document.execCommand("copy");
-
-                document.body.removeChild(area);
-                return data.key;
-            }).then((key) => {
-                setCopied(key);
+                return response;
+            }).then((response) => {
+                setCopied(response);
                 resetStateAfter();
             })
-            .catch(() => {
-                setCopied({ error: "Bitch, waht the fawk!!" })
+            .catch((err) => {
+                console.log(err);
+                setCopied({ error: "Unexpected error...." })
                 resetStateAfter()
             })
     }

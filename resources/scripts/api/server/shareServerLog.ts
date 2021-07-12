@@ -1,7 +1,8 @@
 import http from '@/api/http';
 
-export interface PasteResponse {
-    key: string
+export type PasteResponse = {
+    key?: string
+    error?: string
 }
 
 export default (uuid: string, data: string): Promise<PasteResponse> => {

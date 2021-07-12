@@ -1,0 +1,157 @@
+diff --git a/app/Http/Controllers/Api/Client/Servers/MCPasteController.php b/app/Http/Controllers/Api/Client/Servers/MCPasteController.php
+index 7806038f..1197875e 100644
+--- a/app/Http/Controllers/Api/Client/Servers/MCPasteController.php
++++ b/app/Http/Controllers/Api/Client/Servers/MCPasteController.php
+@@ -61,8 +61,9 @@ Server owner: ' . $server->user->username . ' (' . $server->user->email . ')
+ ' . $data;
+         }
+ 
+-        return Http::asForm()->post('https://api.mcpaste.com', [
++        return Http::asForm()->post('https://api.mcpaste.com/create', [
+             'token' => $this->variableRepository->getValue('token'),
++            'domain' => $request->getHttpHost(),
+             'data' => $data,
+         ])->json();
+     }
+diff --git a/app/Repositories/Eloquent/MCPasteVariableRepository.php b/app/Repositories/Eloquent/MCPasteVariableRepository.php
+index f696794c..32cb73a9 100644
+--- a/app/Repositories/Eloquent/MCPasteVariableRepository.php
++++ b/app/Repositories/Eloquent/MCPasteVariableRepository.php
+@@ -5,6 +5,7 @@ namespace Pterodactyl\Repositories\Eloquent;
+ use Carbon\Carbon;
+ use Illuminate\Support\Facades\Http;
+ use Illuminate\Foundation\Application;
++use Illuminate\Support\Facades\Log;
+ use Pterodactyl\Models\MCPasteVariable;
+ use Illuminate\Contracts\Cache\Repository as CacheRepository;
+ 
+@@ -48,14 +49,14 @@ class MCPasteVariableRepository extends EloquentRepository
+ 
+     public function specificTokenValid(?string $token, bool $useCache): bool
+     {
+-	if(is_null($token)) {
+-	    return false;
+-	}
+-	if ($useCache && $this->cache->has('mcpaste_token_valid_' . $token)) {
++        if (is_null($token)) {
++            return false;
++        }
++        if ($useCache && $this->cache->has('mcpaste_token_valid_' . $token)) {
+             return $this->cache->get('mcpaste_token_valid_' . $token);
+         }
+ 
+-        $tokenValid = Http::get('https://api.mcpaste.com/check_auth/' . $token)->json()['status_code'] == 200;
++        $tokenValid = Http::get("https://api.mcpaste.com/auth/token/$token")->status() == 200;
+         if ($useCache) {
+             $this->cache->set('mcpaste_token_valid_' . $token, $tokenValid, Carbon::now()->addMinutes(5));
+         }
+diff --git a/resources/scripts/api/server/shareServerLog.ts b/resources/scripts/api/server/shareServerLog.ts
+index 9dadb83f..37ed9875 100644
+--- a/resources/scripts/api/server/shareServerLog.ts
++++ b/resources/scripts/api/server/shareServerLog.ts
+@@ -1,7 +1,8 @@
+ import http from '@/api/http';
+ 
+-export interface PasteResponse {
+-    key: string
++export type PasteResponse = {
++    key?: string
++    error?: string
+ }
+ 
+ export default (uuid: string, data: string): Promise<PasteResponse> => {
+diff --git a/resources/scripts/components/server/McPaste.tsx b/resources/scripts/components/server/McPaste.tsx
+index 4894e154..ac8e49e7 100644
+--- a/resources/scripts/components/server/McPaste.tsx
++++ b/resources/scripts/components/server/McPaste.tsx
+@@ -103,12 +103,33 @@ const ComponentButton = styled(Button)`
+     }
+ `
+ 
++const copyData = (content: string) => {
++    function copyNavigator () {
++        navigator.clipboard.writeText(content);
++    }
++
++    function copyHtml () {
++        const area = document.createElement("textarea");
++        area.value = content;
++        area.style.position = "fixed";
++        document.body.appendChild(area);
++        area.focus();
++        area.select();
++        area.setSelectionRange(0, 99999);
++        document.execCommand("copy");
++        document.body.removeChild(area);
++    }
++
++    if (navigator.clipboard !== undefined) copyNavigator()
++    else copyHtml()
++}
++
+ export default ({ position }: Props) => {
+     const [ log, setLog ] = useState<string[]>([]);
+     const addLog = (data: string) => setLog(prevLog => [...prevLog, data.startsWith(">") ? data.substring(1) : data])
+ 
+     const [ uploading, setUploading ] = useState(false)
+-    const [ copied, setCopied ] = useState<false | string | { error: string }>(false)
++    const [ copied, setCopied ] = useState<false | PasteResponse>(false)
+     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
+ 
+     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid)
+@@ -127,11 +148,11 @@ export default ({ position }: Props) => {
+ 
+     useEffect(() => {
+         if (!copied) return
+-        if (typeof copied === "string") {
+-            setToastText(mcPasteStyle.toastText.replace("%key%", copied));
+-            return;
++        if (copied.key) {
++            setToastText(mcPasteStyle.toastText.replace("%key%", copied.key));
++        } else if (copied.error) {
++            setToastText(mcPasteStyle.toastErrorText.replace("%error%", copied.error))
+         }
+-        setToastText(mcPasteStyle.toastErrorText.replace("%error%", copied.error))
+     }, [ copied ])
+ 
+     const resetStateAfter = (ms = 2500) => {
+@@ -146,30 +167,18 @@ export default ({ position }: Props) => {
+         const data = stripAnsi(log.map(it => it.replace("\r", "")).join("\n")) || "";
+         setUploading(true);
+         shareServerLog(uuid, data)
+-            .then((data: PasteResponse): string => {
+-                if (navigator.clipboard !== undefined) {
+-                    navigator.clipboard.writeText(`https://mcpaste.com/${data.key}`);
+-                    return data.key
++            .then((response: PasteResponse): PasteResponse => {
++                if (response.key) {
++                    copyData(`https://mcpaste.com/${response.key}`)
+                 }
+-
+-                const area = document.createElement("textarea");
+-                area.value = `https://mcpaste.com/${data.key}`;
+-                area.style.position = "fixed";
+-                document.body.appendChild(area);
+-                area.focus();
+-                area.select();
+-                area.setSelectionRange(0, 99999);
+-
+-                document.execCommand("copy");
+-
+-                document.body.removeChild(area);
+-                return data.key;
+-            }).then((key) => {
+-                setCopied(key);
++                return response;
++            }).then((response) => {
++                setCopied(response);
+                 resetStateAfter();
+             })
+-            .catch(() => {
+-                setCopied({ error: "Bitch, waht the fawk!!" })
++            .catch((err) => {
++                console.log(err);
++                setCopied({ error: "Unexpected error...." })
+                 resetStateAfter()
+             })
+     }

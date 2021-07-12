@@ -61,8 +61,9 @@ Server owner: ' . $server->user->username . ' (' . $server->user->email . ')
 ' . $data;
         }
 
-        return Http::asForm()->post('https://api.mcpaste.com', [
+        return Http::asForm()->post('https://api.mcpaste.com/create', [
             'token' => $this->variableRepository->getValue('token'),
+            'domain' => $request->getHttpHost(),
             'data' => $data,
         ])->json();
     }

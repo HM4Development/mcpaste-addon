@@ -5,6 +5,7 @@ namespace Pterodactyl\Repositories\Eloquent;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\MCPasteVariable;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
@@ -48,14 +49,14 @@ class MCPasteVariableRepository extends EloquentRepository
 
     public function specificTokenValid(?string $token, bool $useCache): bool
     {
-	if(is_null($token)) {
-	    return false;
-	}
-	if ($useCache && $this->cache->has('mcpaste_token_valid_' . $token)) {
+        if (is_null($token)) {
+            return false;
+        }
+        if ($useCache && $this->cache->has('mcpaste_token_valid_' . $token)) {
             return $this->cache->get('mcpaste_token_valid_' . $token);
         }
 
-        $tokenValid = Http::get('https://api.mcpaste.com/check_auth/' . $token)->json()['status_code'] == 200;
+        $tokenValid = Http::get("https://api.mcpaste.com/auth/token/$token")->status() == 200;
         if ($useCache) {
             $this->cache->set('mcpaste_token_valid_' . $token, $tokenValid, Carbon::now()->addMinutes(5));
         }
