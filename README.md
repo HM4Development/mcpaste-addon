@@ -4,6 +4,7 @@ Copy's the server console and sends to mcpaste.com
 ## Installation
 
 ### Preconditions
+- Have an HM4 account at https://hm4.dev, enable MCPaste API and generate a token for your domain
 - NodeJS and NPM installed
 - git installed
 
