@@ -1,6 +1,8 @@
 # Pterodactyl Addon - MCPaste
 Copy's the server console and sends to mcpaste.com
 
+Support Discord: https://discord.gg/gBJfdzaBQb
+
 ## Before installing
 1. Create an account on https://hm4.dev
 2. Enable the MCPaste API module
