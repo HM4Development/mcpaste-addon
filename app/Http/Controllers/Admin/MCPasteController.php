@@ -11,25 +11,25 @@ use Pterodactyl\Repositories\Eloquent\MCPasteVariableRepository;
 class MCPasteController extends Controller
 {
     private static array $styleDefaults = [
-                'buttonLocation' => 'component',
-                'textButtonText' => 'Send to McPaste.com',
-                'textColor' => '#cad1d8',
-                'textButtonColor' => '#3f4d5a',
-                'textButtonHoverColor' => '#515f6c',
-                'boxColor' => '#3f4d5a',
-                'textSize' => 'text-xs',
-                'buttonSize' => 'xsmall',
-                'shadow' => true,
-                'icon' => 'clipboard',
-                'iconColor' => '#e5e8eb',
-                'iconHoverColor' => '#3f4d5a',
-                'toastTextColor' => '#ffffff',
-                'toastBoxColor' => '#1f2933',
-                'toastBorderColor' => '#000000',
-                'toastOpacity' => 75,
-                'toastText' => 'Copied https://mcpaste.com/%key% to clipboard',
-                'toastErrorText' => "Couldn't share log. Error: %error%",
-            ];
+        'buttonLocation' => 'component',
+        'textButtonText' => 'Send to McPaste.com',
+        'textColor' => '#cad1d8',
+        'textButtonColor' => '#3f4d5a',
+        'textButtonHoverColor' => '#515f6c',
+        'boxColor' => '#3f4d5a',
+        'textSize' => 'text-xs',
+        'buttonSize' => 'xsmall',
+        'shadow' => true,
+        'icon' => 'clipboard',
+        'iconColor' => '#e5e8eb',
+        'iconHoverColor' => '#3f4d5a',
+        'toastTextColor' => '#ffffff',
+        'toastBoxColor' => '#1f2933',
+        'toastBorderColor' => '#000000',
+        'toastOpacity' => 75,
+        'toastText' => 'Copied https://mcpaste.com/%key% to clipboard',
+        'toastErrorText' => "Couldn't share log. Error: %error%",
+    ];
 
     private MCPasteVariableRepository $variableRepository;
     private AlertsMessageBag $alert;

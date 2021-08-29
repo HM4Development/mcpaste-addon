@@ -5,7 +5,6 @@ namespace Pterodactyl\Repositories\Eloquent;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\MCPasteVariable;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 

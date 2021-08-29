@@ -173,9 +173,9 @@ export default ({ position }: Props) => {
                 }
                 return response;
             }).then((response) => {
-                setCopied(response);
-                resetStateAfter();
-            })
+            setCopied(response);
+            resetStateAfter();
+        })
             .catch((err) => {
                 console.log(err);
                 setCopied({ error: "Unexpected error...." })

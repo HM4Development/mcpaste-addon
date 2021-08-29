@@ -14,14 +14,19 @@ Copy's the server console and sends to mcpaste.com
 - NodeJS and NPM installed
 - git installed
 
+NOTE: Remember to back up your panel before installing any addons!
+
+### Automatic install
 We have made a simple to use script that can install the addon for you, to run it, issue these 2 commands:
 ```bash
 # Change directory to your pterodactyl root, change if different
 cd /var/www/pterodactyl
 
 # Run the installer
-bash <(curl -sL https://github.com/HM4Development/mcpaste-addon/releases/download/v2.0.0/install.sh)
+bash <(curl -sL https://github.com/HM4Development/mcpaste-addon/releases/download/v2.0.1/install.sh)
 ```
+
+### [Manual install](MANUAL_INSTALL.md)
 
 ## After installing
 1. Copy the token created on https://hm4.dev

@@ -13,7 +13,6 @@ class AssetComposer
      * @var \Pterodactyl\Services\Helpers\AssetHashService
      */
     private $assetHashService;
-
     private MCPasteVariableRepository $pasteVariableRepository;
 
     /**

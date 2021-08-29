@@ -1,7 +1,6 @@
 diff --git a/app/Http/Controllers/Admin/MCPasteController.php b/app/Http/Controllers/Admin/MCPasteController.php
-new file mode 100644
-index 00000000..9ffa3c9e
---- /dev/null
+index e69de29b..c40798f2 100644
+--- a/app/Http/Controllers/Admin/MCPasteController.php
 +++ b/app/Http/Controllers/Admin/MCPasteController.php
 @@ -0,0 +1,128 @@
 +<?php
@@ -17,25 +16,25 @@ index 00000000..9ffa3c9e
 +class MCPasteController extends Controller
 +{
 +    private static array $styleDefaults = [
-+                'buttonLocation' => 'component',
-+                'textButtonText' => 'Send to McPaste.com',
-+                'textColor' => '#cad1d8',
-+                'textButtonColor' => '#3f4d5a',
-+                'textButtonHoverColor' => '#515f6c',
-+                'boxColor' => '#3f4d5a',
-+                'textSize' => 'text-xs',
-+                'buttonSize' => 'xsmall',
-+                'shadow' => true,
-+                'icon' => 'clipboard',
-+                'iconColor' => '#e5e8eb',
-+                'iconHoverColor' => '#3f4d5a',
-+                'toastTextColor' => '#ffffff',
-+                'toastBoxColor' => '#1f2933',
-+                'toastBorderColor' => '#000000',
-+                'toastOpacity' => 75,
-+                'toastText' => 'Copied https://mcpaste.com/%key% to clipboard',
-+                'toastErrorText' => "Couldn't share log. Error: %error%",
-+            ];
++        'buttonLocation' => 'component',
++        'textButtonText' => 'Send to McPaste.com',
++        'textColor' => '#cad1d8',
++        'textButtonColor' => '#3f4d5a',
++        'textButtonHoverColor' => '#515f6c',
++        'boxColor' => '#3f4d5a',
++        'textSize' => 'text-xs',
++        'buttonSize' => 'xsmall',
++        'shadow' => true,
++        'icon' => 'clipboard',
++        'iconColor' => '#e5e8eb',
++        'iconHoverColor' => '#3f4d5a',
++        'toastTextColor' => '#ffffff',
++        'toastBoxColor' => '#1f2933',
++        'toastBorderColor' => '#000000',
++        'toastOpacity' => 75,
++        'toastText' => 'Copied https://mcpaste.com/%key% to clipboard',
++        'toastErrorText' => "Couldn't share log. Error: %error%",
++    ];
 +
 +    private MCPasteVariableRepository $variableRepository;
 +    private AlertsMessageBag $alert;
@@ -133,11 +132,10 @@ index 00000000..9ffa3c9e
 +    }
 +}
 diff --git a/app/Http/Controllers/Api/Client/Servers/MCPasteController.php b/app/Http/Controllers/Api/Client/Servers/MCPasteController.php
-new file mode 100644
-index 00000000..a43f8f35
---- /dev/null
+index e69de29b..1197875e 100644
+--- a/app/Http/Controllers/Api/Client/Servers/MCPasteController.php
 +++ b/app/Http/Controllers/Api/Client/Servers/MCPasteController.php
-@@ -0,0 +1,69 @@
+@@ -0,0 +1,70 @@
 +<?php
 +
 +namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
@@ -191,7 +189,7 @@ index 00000000..a43f8f35
 +Server ID: ' . $server->uuid . '
 +Server node: ' . $server->node->name . '(' . $server->node_id . ')
 +Server state: ' . Arr::get($serverDetails, 'state', 'stopped') . '
-+Server CPU: ' . $this->humanFileSize(Arr::get($serverDetails, 'utilization.cpu_absolute', 0)) . '
++Server CPU: ' . Arr::get($serverDetails, 'utilization.cpu_absolute', 0) . '%
 +Server RAM: ' . $this->humanFileSize(Arr::get($serverDetails, 'utilization.memory_bytes', 0)) . '
 +Server Disk: ' . $this->humanFileSize(Arr::get($serverDetails, 'utilization.disk_bytes', 0)) . '
 +Server docker image: ' . $server->image . '
@@ -201,16 +199,16 @@ index 00000000..a43f8f35
 +' . $data;
 +        }
 +
-+        return Http::asForm()->post('https://api.mcpaste.com', [
++        return Http::asForm()->post('https://api.mcpaste.com/create', [
 +            'token' => $this->variableRepository->getValue('token'),
++            'domain' => $request->getHttpHost(),
 +            'data' => $data,
 +        ])->json();
 +    }
 +}
 diff --git a/app/Http/Requests/Admin/MCPasteFormRequest.php b/app/Http/Requests/Admin/MCPasteFormRequest.php
-new file mode 100644
-index 00000000..792d18be
---- /dev/null
+index e69de29b..792d18be 100644
+--- a/app/Http/Requests/Admin/MCPasteFormRequest.php
 +++ b/app/Http/Requests/Admin/MCPasteFormRequest.php
 @@ -0,0 +1,14 @@
 +<?php
@@ -228,9 +226,8 @@ index 00000000..792d18be
 +    }
 +}
 diff --git a/app/Http/Requests/Api/Client/Servers/ShareLogRequest.php b/app/Http/Requests/Api/Client/Servers/ShareLogRequest.php
-new file mode 100644
-index 00000000..ecd67eea
---- /dev/null
+index e69de29b..ecd67eea 100644
+--- a/app/Http/Requests/Api/Client/Servers/ShareLogRequest.php
 +++ b/app/Http/Requests/Api/Client/Servers/ShareLogRequest.php
 @@ -0,0 +1,15 @@
 +<?php
@@ -249,7 +246,7 @@ index 00000000..ecd67eea
 +    }
 +}
 diff --git a/app/Http/ViewComposers/AssetComposer.php b/app/Http/ViewComposers/AssetComposer.php
-index 32ec9fb8..37e6ccad 100644
+index 32ec9fb8..5dc6518a 100644
 --- a/app/Http/ViewComposers/AssetComposer.php
 +++ b/app/Http/ViewComposers/AssetComposer.php
 @@ -4,6 +4,8 @@ namespace Pterodactyl\Http\ViewComposers;
@@ -261,12 +258,12 @@ index 32ec9fb8..37e6ccad 100644
  
  class AssetComposer
  {
-@@ -12,12 +14,15 @@ class AssetComposer
+@@ -11,13 +13,15 @@ class AssetComposer
+      * @var \Pterodactyl\Services\Helpers\AssetHashService
       */
      private $assetHashService;
- 
 +    private MCPasteVariableRepository $pasteVariableRepository;
-+
+ 
      /**
       * AssetComposer constructor.
       */
@@ -278,7 +275,7 @@ index 32ec9fb8..37e6ccad 100644
      }
  
      /**
-@@ -35,5 +40,9 @@ class AssetComposer
+@@ -35,5 +39,9 @@ class AssetComposer
              ],
              'analytics' => config('app.analytics') ?? '',
          ]);
@@ -289,9 +286,8 @@ index 32ec9fb8..37e6ccad 100644
      }
  }
 diff --git a/app/Models/MCPasteVariable.php b/app/Models/MCPasteVariable.php
-new file mode 100755
-index 00000000..7247b589
---- /dev/null
+index e69de29b..7247b589 100644
+--- a/app/Models/MCPasteVariable.php
 +++ b/app/Models/MCPasteVariable.php
 @@ -0,0 +1,27 @@
 +<?php
@@ -322,11 +318,10 @@ index 00000000..7247b589
 +    ];
 +}
 diff --git a/app/Repositories/Eloquent/MCPasteVariableRepository.php b/app/Repositories/Eloquent/MCPasteVariableRepository.php
-new file mode 100644
-index 00000000..41a21beb
---- /dev/null
+index e69de29b..19d3c786 100644
+--- a/app/Repositories/Eloquent/MCPasteVariableRepository.php
 +++ b/app/Repositories/Eloquent/MCPasteVariableRepository.php
-@@ -0,0 +1,62 @@
+@@ -0,0 +1,65 @@
 +<?php
 +
 +namespace Pterodactyl\Repositories\Eloquent;
@@ -375,13 +370,16 @@ index 00000000..41a21beb
 +        return $this->specificTokenValid($this->getValue('token'), true);
 +    }
 +
-+    public function specificTokenValid(string $token, bool $useCache): bool
++    public function specificTokenValid(?string $token, bool $useCache): bool
 +    {
++        if (is_null($token)) {
++            return false;
++        }
 +        if ($useCache && $this->cache->has('mcpaste_token_valid_' . $token)) {
 +            return $this->cache->get('mcpaste_token_valid_' . $token);
 +        }
 +
-+        $tokenValid = Http::get('https://api.mcpaste.com/check_auth/' . $token)->json()['status_code'] == 200;
++        $tokenValid = Http::get("https://api.mcpaste.com/auth/token/$token")->status() == 200;
 +        if ($useCache) {
 +            $this->cache->set('mcpaste_token_valid_' . $token, $tokenValid, Carbon::now()->addMinutes(5));
 +        }
@@ -390,9 +388,8 @@ index 00000000..41a21beb
 +    }
 +}
 diff --git a/database/migrations/2021_07_08_120752_create_mcpaste_table.php b/database/migrations/2021_07_08_120752_create_mcpaste_table.php
-new file mode 100644
-index 00000000..1c935f88
---- /dev/null
+index e69de29b..1c935f88 100644
+--- a/database/migrations/2021_07_08_120752_create_mcpaste_table.php
 +++ b/database/migrations/2021_07_08_120752_create_mcpaste_table.php
 @@ -0,0 +1,31 @@
 +<?php
@@ -426,37 +423,16 @@ index 00000000..1c935f88
 +        Schema::dropIfExists('mcpaste_variables');
 +    }
 +}
-diff --git a/package.json b/package.json
-index 049a88fc..278fdcb2 100644
---- a/package.json
-+++ b/package.json
-@@ -32,6 +32,7 @@
-         "react-transition-group": "^4.4.1",
-         "reaptcha": "^1.7.2",
-         "sockette": "^2.0.6",
-+        "strip-ansi": "^7.0.0",
-         "styled-components": "^5.2.1",
-         "styled-components-breakpoint": "^3.0.0-preview.20",
-         "swr": "^0.2.3",
-@@ -113,7 +114,7 @@
-         "watch": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
-         "build": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --progress",
-         "build:production": "yarn run clean && cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production",
--        "serve": "yarn run clean && cross-env PUBLIC_PATH=https://pterodactyl.test:8080 NODE_ENV=development webpack-dev-server --host 0.0.0.0 --hot --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
-+        "serve": "yarn run clean && cross-env PUBLIC_PATH=http://localhost:8080 NODE_ENV=development webpack-dev-server --host 0.0.0.0 --hot"
-     },
-     "browserslist": [
-         "> 0.5%",
 diff --git a/resources/scripts/api/server/shareServerLog.ts b/resources/scripts/api/server/shareServerLog.ts
-new file mode 100644
-index 00000000..9dadb83f
---- /dev/null
+index e69de29b..37ed9875 100644
+--- a/resources/scripts/api/server/shareServerLog.ts
 +++ b/resources/scripts/api/server/shareServerLog.ts
-@@ -0,0 +1,13 @@
+@@ -0,0 +1,14 @@
 +import http from '@/api/http';
 +
-+export interface PasteResponse {
-+    key: string
++export type PasteResponse = {
++    key?: string
++    error?: string
 +}
 +
 +export default (uuid: string, data: string): Promise<PasteResponse> => {
@@ -467,17 +443,14 @@ index 00000000..9dadb83f
 +    });
 +};
 diff --git a/resources/scripts/components/server/Console.tsx b/resources/scripts/components/server/Console.tsx
-index 201c77de..60494185 100644
+index fcc43e3c..9d0f6ab1 100644
 --- a/resources/scripts/components/server/Console.tsx
 +++ b/resources/scripts/components/server/Console.tsx
-@@ -15,6 +15,7 @@ import useEventListener from '@/plugins/useEventListener';
- import { debounce } from 'debounce';
- import { usePersistedState } from '@/plugins/usePersistedState';
- import { SocketEvent, SocketRequest } from '@/components/server/events';
+@@ -1,3 +1,4 @@
 +import McPaste, { mcPasteData, mcPasteStyle } from './McPaste';
- 
- const theme = {
-     background: th`colors.black`.toString(),
+ import React, { useEffect, useMemo, useRef, useState } from 'react';
+ import { Terminal, ITerminalOptions } from 'xterm';
+ import { FitAddon } from 'xterm-addon-fit';
 @@ -225,6 +226,7 @@ export default () => {
                              onKeyDown={handleCommandKeyDown}
                          />
@@ -487,11 +460,10 @@ index 201c77de..60494185 100644
              }
          </div>
 diff --git a/resources/scripts/components/server/McPaste.tsx b/resources/scripts/components/server/McPaste.tsx
-new file mode 100644
-index 00000000..4894e154
---- /dev/null
+index e69de29b..f9c76824 100644
+--- a/resources/scripts/components/server/McPaste.tsx
 +++ b/resources/scripts/components/server/McPaste.tsx
-@@ -0,0 +1,225 @@
+@@ -0,0 +1,234 @@
 +import React, { useEffect, useState } from 'react';
 +import tw from "twin.macro";
 +import Button from "@/components/elements/Button";
@@ -597,12 +569,33 @@ index 00000000..4894e154
 +    }
 +`
 +
++const copyData = (content: string) => {
++    function copyNavigator () {
++        navigator.clipboard.writeText(content);
++    }
++
++    function copyHtml () {
++        const area = document.createElement("textarea");
++        area.value = content;
++        area.style.position = "fixed";
++        document.body.appendChild(area);
++        area.focus();
++        area.select();
++        area.setSelectionRange(0, 99999);
++        document.execCommand("copy");
++        document.body.removeChild(area);
++    }
++
++    if (navigator.clipboard !== undefined) copyNavigator()
++    else copyHtml()
++}
++
 +export default ({ position }: Props) => {
 +    const [ log, setLog ] = useState<string[]>([]);
 +    const addLog = (data: string) => setLog(prevLog => [...prevLog, data.startsWith(">") ? data.substring(1) : data])
 +
 +    const [ uploading, setUploading ] = useState(false)
-+    const [ copied, setCopied ] = useState<false | string | { error: string }>(false)
++    const [ copied, setCopied ] = useState<false | PasteResponse>(false)
 +    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
 +
 +    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid)
@@ -621,11 +614,11 @@ index 00000000..4894e154
 +
 +    useEffect(() => {
 +        if (!copied) return
-+        if (typeof copied === "string") {
-+            setToastText(mcPasteStyle.toastText.replace("%key%", copied));
-+            return;
++        if (copied.key) {
++            setToastText(mcPasteStyle.toastText.replace("%key%", copied.key));
++        } else if (copied.error) {
++            setToastText(mcPasteStyle.toastErrorText.replace("%error%", copied.error))
 +        }
-+        setToastText(mcPasteStyle.toastErrorText.replace("%error%", copied.error))
 +    }, [ copied ])
 +
 +    const resetStateAfter = (ms = 2500) => {
@@ -640,30 +633,18 @@ index 00000000..4894e154
 +        const data = stripAnsi(log.map(it => it.replace("\r", "")).join("\n")) || "";
 +        setUploading(true);
 +        shareServerLog(uuid, data)
-+            .then((data: PasteResponse): string => {
-+                if (navigator.clipboard !== undefined) {
-+                    navigator.clipboard.writeText(`https://mcpaste.com/${data.key}`);
-+                    return data.key
++            .then((response: PasteResponse): PasteResponse => {
++                if (response.key) {
++                    copyData(`https://mcpaste.com/${response.key}`)
 +                }
-+
-+                const area = document.createElement("textarea");
-+                area.value = `https://mcpaste.com/${data.key}`;
-+                area.style.position = "fixed";
-+                document.body.appendChild(area);
-+                area.focus();
-+                area.select();
-+                area.setSelectionRange(0, 99999);
-+
-+                document.execCommand("copy");
-+
-+                document.body.removeChild(area);
-+                return data.key;
-+            }).then((key) => {
-+                setCopied(key);
-+                resetStateAfter();
-+            })
-+            .catch(() => {
-+                setCopied({ error: "Bitch, waht the fawk!!" })
++                return response;
++            }).then((response) => {
++            setCopied(response);
++            resetStateAfter();
++        })
++            .catch((err) => {
++                console.log(err);
++                setCopied({ error: "Unexpected error...." })
 +                resetStateAfter()
 +            })
 +    }
@@ -718,27 +699,15 @@ index 00000000..4894e154
 +    )
 +}
 diff --git a/resources/scripts/components/server/ServerConsole.tsx b/resources/scripts/components/server/ServerConsole.tsx
-index 48385d7c..f26824c6 100644
+index 1c6aca4d..29f08ea1 100644
 --- a/resources/scripts/components/server/ServerConsole.tsx
 +++ b/resources/scripts/components/server/ServerConsole.tsx
-@@ -10,6 +10,7 @@ import PowerControls from '@/components/server/PowerControls';
- import { EulaModalFeature } from '@feature/index';
- import ErrorBoundary from '@/components/elements/ErrorBoundary';
- import Spinner from '@/components/elements/Spinner';
+@@ -1,3 +1,4 @@
 +import McPaste, { mcPasteData, mcPasteStyle } from '@/components/server/McPaste';
- 
- export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
- 
-@@ -21,6 +22,8 @@ const ServerConsole = () => {
-     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-     const eggFeatures = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
- 
-+    // @ts-ignore
-+    // @ts-ignore
-     return (
-         <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
-             <div css={tw`w-full lg:w-1/4`}>
-@@ -45,9 +48,12 @@ const ServerConsole = () => {
+ import React, { lazy, memo } from 'react';
+ import { ServerContext } from '@/state/server';
+ import Can from '@/components/elements/Can';
+@@ -45,9 +46,12 @@ const ServerConsole = () => {
                              </ContentContainer>
                          </div>
                          :
@@ -755,9 +724,8 @@ index 48385d7c..f26824c6 100644
              </div>
              <div css={tw`w-full lg:w-3/4 mt-4 lg:mt-0 lg:pl-4`}>
 diff --git a/resources/views/admin/mcpaste/index.blade.php b/resources/views/admin/mcpaste/index.blade.php
-new file mode 100644
-index 00000000..5cd93ed2
---- /dev/null
+index e69de29b..5cd93ed2 100644
+--- a/resources/views/admin/mcpaste/index.blade.php
 +++ b/resources/views/admin/mcpaste/index.blade.php
 @@ -0,0 +1,254 @@
 +{{-- Pterodactyl - Panel --}}
@@ -1030,30 +998,19 @@ index e885183e..e6b030ac 100644
                          <li class="header">SERVICE MANAGEMENT</li>
                          <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.mounts') ?: 'active' }}">
                              <a href="{{ route('admin.mounts') }}">
-diff --git a/resources/views/templates/base/core.blade.php b/resources/views/templates/base/core.blade.php
-index 2db9da44..142910a2 100644
---- a/resources/views/templates/base/core.blade.php
-+++ b/resources/views/templates/base/core.blade.php
-@@ -1,5 +1,5 @@
- @extends('templates/wrapper', [
--    'css' => ['body' => 'bg-neutral-800'],
-+    'css' => ['body' => 'bg-neutral-800']
- ])
- 
- @section('container')
 diff --git a/resources/views/templates/wrapper.blade.php b/resources/views/templates/wrapper.blade.php
-index 213f0935..ea047d89 100644
+index 213f0935..b6ffeed3 100644
 --- a/resources/views/templates/wrapper.blade.php
 +++ b/resources/views/templates/wrapper.blade.php
 @@ -29,6 +29,11 @@
                      window.SiteConfiguration = {!! json_encode($siteConfiguration) !!};
                  </script>
              @endif
-+                @if(!empty($mcPasteData))
-+                    <script>
-+                        window.MCPasteData = {!! json_encode($mcPasteData) !!};
-+                    </script>
-+                @endif
++            @if(!empty($mcPasteData))
++                <script>
++                    window.MCPasteData = {!! json_encode($mcPasteData) !!};
++                </script>
++            @endif
          @show
          <style>
              @import url('//fonts.googleapis.com/css?family=Rubik:300,400,500&display=swap');
@@ -1084,33 +1041,3 @@ index ec4988bc..aa801f57 100644
      Route::group(['prefix' => '/databases'], function () {
          Route::get('/', 'Servers\DatabaseController@index');
          Route::post('/', 'Servers\DatabaseController@store');
-diff --git a/yarn.lock b/yarn.lock
-index ac59506e..cb5364ae 100644
---- a/yarn.lock
-+++ b/yarn.lock
-@@ -1724,6 +1724,11 @@ ansi-regex@^5.0.0:
-   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-5.0.0.tgz#388539f55179bf39339c81af30a654d69f87cb75"
-   integrity sha512-bY6fj56OUQ0hU1KjFNDQuJFezqKdrAyFdIevADiqrWHwSlbmBNMHp5ak2f40Pm8JTFyM2mqxkG6ngkHO11f/lg==
- 
-+ansi-regex@^6.0.0:
-+  version "6.0.0"
-+  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-6.0.0.tgz#ecc7f5933cbe5ac7b33e209a5ff409ab1669c6b2"
-+  integrity sha512-tAaOSrWCHF+1Ear1Z4wnJCXA9GGox4K6Ic85a5qalES2aeEwQGr7UC93mwef49536PkCYjzkp0zIxfFvexJ6zQ==
-+
- ansi-styles@^3.2.0, ansi-styles@^3.2.1:
-   version "3.2.1"
-   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-3.2.1.tgz#41fbb20243e50b12be0f04b8dedbf07520ce841d"
-@@ -7180,6 +7185,13 @@ strip-ansi@^6.0.0:
-   dependencies:
-     ansi-regex "^5.0.0"
- 
-+strip-ansi@^7.0.0:
-+  version "7.0.0"
-+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-7.0.0.tgz#1dc49b980c3a4100366617adac59327eefdefcb0"
-+  integrity sha512-UhDTSnGF1dc0DRbUqr1aXwNoY3RgVkSWG8BrpnuFIxhP57IqbS7IRta2Gfiavds4yCxc5+fEAVVOgBZWnYkvzg==
-+  dependencies:
-+    ansi-regex "^6.0.0"
-+
- strip-bom@^3.0.0:
-   version "3.0.0"
-   resolved "https://registry.yarnpkg.com/strip-bom/-/strip-bom-3.0.0.tgz#2334c18e9c759f7bdd56fdef7e9ae3d588e68ed3"

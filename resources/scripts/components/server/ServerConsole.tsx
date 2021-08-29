@@ -1,3 +1,4 @@
+import McPaste, { mcPasteData, mcPasteStyle } from '@/components/server/McPaste';
 import React, { lazy, memo } from 'react';
 import { ServerContext } from '@/state/server';
 import Can from '@/components/elements/Can';
@@ -7,10 +8,9 @@ import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import isEqual from 'react-fast-compare';
 import PowerControls from '@/components/server/PowerControls';
-import { EulaModalFeature } from '@feature/index';
+import { EulaModalFeature, JavaVersionModalFeature } from '@feature/index';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import Spinner from '@/components/elements/Spinner';
-import McPaste, { mcPasteData, mcPasteStyle } from '@/components/server/McPaste';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -22,8 +22,6 @@ const ServerConsole = () => {
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const eggFeatures = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
 
-    // @ts-ignore
-    // @ts-ignore
     return (
         <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
             <div css={tw`w-full lg:w-1/4`}>
@@ -63,11 +61,10 @@ const ServerConsole = () => {
                     </ErrorBoundary>
                     <ChunkedStatGraphs/>
                 </Spinner.Suspense>
-                {eggFeatures.includes('eula') &&
                 <React.Suspense fallback={null}>
-                    <EulaModalFeature/>
+                    {eggFeatures.includes('eula') && <EulaModalFeature/>}
+                    {eggFeatures.includes('java_version') && <JavaVersionModalFeature/>}
                 </React.Suspense>
-                }
             </div>
         </ServerContentBlock>
     );
