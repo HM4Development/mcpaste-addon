@@ -169,7 +169,7 @@ export default ({ position }: Props) => {
         shareServerLog(uuid, data)
             .then((response: PasteResponse): PasteResponse => {
                 if (response.key) {
-                    copyData(`https://mcpaste.com/${response.key}`)
+                    copyData(`https://${response.domain ?? "mcpaste.com"}/${response.key}`)
                 }
                 return response;
             }).then((response) => {

@@ -2,6 +2,7 @@ import http from '@/api/http';
 
 export type PasteResponse = {
     key?: string
+    domain?: string
     error?: string
 }
 
