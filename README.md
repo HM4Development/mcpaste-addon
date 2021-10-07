@@ -25,7 +25,7 @@ We have made a simple to use script that can install the addon for you, to run i
 cd /var/www/pterodactyl
 
 # Run the installer
-bash <(curl -sL https://github.com/HM4Development/mcpaste-addon/releases/download/v2.0.1/install.sh)
+bash <(curl -sL https://github.com/HM4Development/mcpaste-addon/releases/download/v2.1.0/install.sh)
 ```
 
 ### [Manual install](MANUAL_INSTALL.md)
