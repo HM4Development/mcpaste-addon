@@ -1,3 +1,5 @@
+# Addon Installation
+
 routes/api-client.php
 - after line 48
 ```php
@@ -128,3 +130,15 @@ app/Http/Requests/Admin
 
 app/Http/Requests/Api/Client/Servers
 - copy every file
+
+# After Installation
+
+Run these commands to apply database changes.
+```
+php artisan view:clear
+php artisan config:clear
+php artisan migrate --force
+
+php artisan queue:restart
+php artisan up
+```
