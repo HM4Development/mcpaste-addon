@@ -3,6 +3,8 @@ Copy's the server console and sends to mcpaste.com
 
 Support Discord: https://discord.gg/gBJfdzaBQb
 
+New Install Doc ([HM4 Docs](https://docs.hm4.dev/en/pterodactyl/addons/mcpaste))
+
 ## Before installing
 1. Create an account on https://hm4.dev
 2. Enable the MCPaste API module
