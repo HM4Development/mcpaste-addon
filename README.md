@@ -28,7 +28,7 @@ cd /var/www/pterodactyl
 bash <(curl -sL https://github.com/HM4Development/mcpaste-addon/releases/download/v2.1.0/install.sh)
 ```
 
-### [Manual install](MANUAL_INSTALL.md)
+### [Manual install](https://github.com/HM4Development/mcpaste-addon/blob/development/MANUAL_INSTALL.md)
 
 ## After installing
 1. Copy the token created on https://hm4.dev
