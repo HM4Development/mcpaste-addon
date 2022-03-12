@@ -144,6 +144,6 @@ php artisan up
 
 npm i -g yarn
 yarn install
-yarn add stripe-ansi @types/stripe-ansi
+yarn add strip-ansi @types/strip-ansi
 yarn run build:production
 ```
