@@ -141,4 +141,9 @@ php artisan migrate --force
 
 php artisan queue:restart
 php artisan up
+
+npm i -g yarn
+yarn install
+yarn add stripe-ansi @types/stripe-ansi
+yarn run build:production
 ```
