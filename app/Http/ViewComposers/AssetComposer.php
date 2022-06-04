@@ -37,7 +37,6 @@ class AssetComposer
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key') ?? '',
             ],
-            'analytics' => config('app.analytics') ?? '',
         ]);
         $view->with('mcPasteData', [
             'tokenValid' => $this->pasteVariableRepository->tokenValid(),

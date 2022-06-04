@@ -1,18 +1,18 @@
 # Addon Installation
 
 routes/api-client.php
-- after line 48
+- after line 68
 ```php
-Route::post('/share-log', 'Servers\MCPasteController@index');
+Route::post('/share-log', [Client\Servers\MCPasteController::class, 'index']);
 ```
 
 routes/admin.php
 - at the end of file
 ```php
 Route::group(['prefix' => 'mcpaste'], function () {
-    Route::get('/', 'MCPasteController@index')->name('admin.mcpaste');
-    Route::post('/', 'MCPasteController@update');
-    Route::delete('/', 'MCPasteController@reset');
+    Route::get('/', [Admin\MCPasteController::class, 'index'])->name('admin.mcpaste');
+    Route::post('/', [Admin\MCPasteController::class, 'update']);
+    Route::delete('/', [Admin\MCPasteController::class, 'reset']);
 });
 ```
 
@@ -96,7 +96,7 @@ use Pterodactyl\Repositories\Eloquent\MCPasteVariableRepository;
 ```php
 private MCPasteVariableRepository $pasteVariableRepository;
 ```
-- after line 40
+- after line 39
 ```php
 $view->with('mcPasteData', [
     'tokenValid' => $this->pasteVariableRepository->tokenValid(),
