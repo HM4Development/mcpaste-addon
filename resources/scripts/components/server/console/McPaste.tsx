@@ -7,7 +7,7 @@ import Fade from "@/components/elements/Fade";
 import { SwitchTransition } from "react-transition-group";
 import styled, { keyframes } from "styled-components/macro";
 import stripAnsi from 'strip-ansi';
-import shareServerLog, { PasteResponse } from '../../api/server/shareServerLog';
+import shareServerLog, { PasteResponse } from '../../../api/server/shareServerLog';
 import { IconProp, library } from '@fortawesome/fontawesome-svg-core';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -95,7 +95,7 @@ const textSizeMap = {
 }
 
 const ComponentButton = styled(Button)`
-    ${tw`transition-all`};
+    ${tw`transition-all border-none`};
     background-color: ${mcPasteStyle.textButtonColor};
 
     &:hover {
@@ -187,11 +187,11 @@ export default ({ position }: Props) => {
 
     const content = position === 'component' ?
         (
-            <div css={[tw`rounded p-3 flex mt-4 justify-center`, mcPasteStyle.shadow ? tw`shadow-md` : '']} style={{ backgroundColor: mcPasteStyle.boxColor }}>
+            <div css={[tw`rounded p-4 flex justify-center`, mcPasteStyle.shadow ? tw`shadow-lg` : '']} style={{ backgroundColor: mcPasteStyle.boxColor }}>
                 <ComponentButton
                     size={mcPasteStyle.buttonSize}
                     isSecondary
-                    css={tw`mr-2`}
+                    css={tw`mr-2 shadow-md`}
                     disabled={uploading}
                     onClick={e => {
                         mcPaste()
@@ -205,17 +205,18 @@ export default ({ position }: Props) => {
         )
         :
         (
-            <CMDButtonType onClick={e => {
-                mcPaste()
-            }}>
-                <div css={[tw`flex-shrink-0 p-2 font-bold`, uploading ? '' : tw`cursor-pointer`]}>
-                    <FontAwesomeIcon icon={mcPasteStyle.icon as IconProp} fixedWidth size={'lg'} color={mcPasteStyle.iconColor} />
-                </div>
-            </CMDButtonType>
+            <div
+                 css={[uploading ? tw`opacity-75` : tw`cursor-pointer`]}
+                 onClick={e => {
+                     mcPaste()
+                 }}
+            >
+                <FontAwesomeIcon icon={mcPasteStyle.icon as IconProp} fixedWidth color={mcPasteStyle.iconColor} />
+            </div>
         )
 
     return (
-        <div>
+        <div css={position === "component" ? tw`col-span-6` : ""}>
             { content }
             <SwitchTransition>
                 <Fade timeout={250} key={copied !== false ? 'visible' : 'invisible'}>

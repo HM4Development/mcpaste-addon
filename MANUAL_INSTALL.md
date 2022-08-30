@@ -1,5 +1,12 @@
 # Addon Installation
 
+## Note
+The term `copy every file` means to look into this repository and find the file mentioned by that path and copy every file from there to that same path in your panel
+
+E.g. if it says `copy every file` under `database/migrations`, you should go under `database/migrations` in this repository and copy every file from there into `database/migrations` under your panel's root directory
+
+---
+
 routes/api-client.php
 - after line 68
 ```php
@@ -34,7 +41,7 @@ resources/views/layouts/admin.blade.php
 ```
 
 resources/views/templates/wrapper.blade.php
-- after line 31
+- after line 32
 ```php
 @if(!empty($mcPasteData))
     <script>
@@ -46,38 +53,31 @@ resources/views/templates/wrapper.blade.php
 resources/scripts/api/server
 - copy every file
 
-resources/scripts/components/server/McPaste.tsx
+resources/scripts/components/server/console/McPaste.tsx
 - copy the whole file
 
-resources/scripts/components/server/ServerConsole.tsx
+resources/scripts/components/server/console/ServerDetailsBlock.tsx
 - at top of file
-```
+```tsx
 import McPaste, { mcPasteData, mcPasteStyle } from '@/components/server/McPaste';
 ```
-- replace
+- after like 93
 ```tsx
-<Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
-    <PowerControls/>
-</Can>
-```
-with
-```tsx
-<div>
-    <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
-        <PowerControls/>
-    </Can>
-    { mcPasteData.tokenValid && mcPasteStyle.buttonLocation === "component" && <McPaste position={'component'} /> }
-</div>
+{ mcPasteData.tokenValid && mcPasteStyle.buttonLocation === "component" && <McPaste position={'component'} /> }
 ```
 
-resources/scripts/components/server/Console.tsx
+resources/scripts/components/server/console/Console.tsx
 - at top of file
 ```tsx
-import McPaste, { mcPasteData, mcPasteStyle } from './McPaste';
+import McPaste, { mcPasteData, mcPasteStyle } from '@/components/server/console/McPaste';
 ```
-- after line 228
+- after line 225
 ```tsx
-{ mcPasteData.tokenValid && mcPasteStyle.buttonLocation === "commandLine" && <McPaste position={'commandLine'} /> }
+{ mcPasteData.tokenValid && mcPasteStyle.buttonLocation === "commandLine" &&
+    <div className={classNames("flex items-center top-0 right-0 absolute z-10 select-none h-full px-3 transition-colors duration-100")}>
+        <McPaste position={'commandLine'} />
+    </div>
+}
 ```
 
 app/Repositories/Eloquent
@@ -143,7 +143,7 @@ php artisan queue:restart
 php artisan up
 
 npm i -g yarn
-yarn install
 yarn add strip-ansi @types/strip-ansi
+yarn install
 yarn run build:production
 ```
