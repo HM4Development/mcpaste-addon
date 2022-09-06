@@ -59,7 +59,7 @@ resources/scripts/components/server/console/McPaste.tsx
 resources/scripts/components/server/console/ServerDetailsBlock.tsx
 - at top of file
 ```tsx
-import McPaste, { mcPasteData, mcPasteStyle } from '@/components/server/McPaste';
+import McPaste, { mcPasteData, mcPasteStyle } from '@/components/server/console/McPaste';
 ```
 - after like 93
 ```tsx
